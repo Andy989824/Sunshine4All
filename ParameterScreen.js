@@ -1,10 +1,22 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { setStatusBarBackgroundColor, StatusBar } from 'expo-status-bar';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Image, StyleSheet, Text, View, FlatList, TouchableOpacity, ListViewBase } from 'react-native';
 import { useFonts } from 'expo-font';
-
+import { LinearGradient } from 'expo-linear-gradient';
+import { Picker } from '@react-native-picker/picker';
 import RNPickerSelect from 'react-native-picker-select';
 import Checkbox from 'expo-checkbox';
+import * as SplashScreen from 'expo-splash-screen';
+import * as Location from 'expo-location';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import cover from './assets/cover-screen-img.png';
+import home from './assets/home-screen-img.png';
+import button_icon from './assets/select-location-icon.png';
+
+
 
 export default function ParameterScreen({ route, navigation }) {
   const [loaded] = useFonts({
@@ -13,7 +25,7 @@ export default function ParameterScreen({ route, navigation }) {
 
   });
 
-  const [startYear, setStartYear] = useState('test');
+  const [startYear, setStartYear] = useState();
   const [endYear, setEndYear] = useState();
 
   const [UVChecked, setUVChecked] = useState();
@@ -21,6 +33,7 @@ export default function ParameterScreen({ route, navigation }) {
   const [temperatureChecked, setTemperatureChecked] = useState();
   const [humidityChecked, setHumidityChecked] = useState();
   const [cloudChecked, setCloudChecked] = useState();
+
 
   //Get the Latitude & Longitude from Home Screen
   const { latitude, longitude } = route.params;
@@ -71,7 +84,6 @@ export default function ParameterScreen({ route, navigation }) {
     let APILink = APIPrefix + parameterStr + postfixStr;
 
     console.log(APILink);
-    console.log(latitude)
     navigation.navigate('Chart', {
       APILink: APILink,
       UVChecked: UVChecked,
@@ -81,6 +93,23 @@ export default function ParameterScreen({ route, navigation }) {
       cloudChecked: cloudChecked
     });
   }
+
+  const pickerStyle = {
+    inputIOS: {
+      color: 'white',
+      width: 150,
+      borderRadius: 5,
+    },
+    placeholder: {
+      color: 'grey',
+    },
+    inputAndroid: {
+      color: 'black',
+      width: 150,
+      borderRadius: 5,
+
+    },
+  };
 
   return (
     <View style={styles.container}>
@@ -94,7 +123,8 @@ export default function ParameterScreen({ route, navigation }) {
         <Text style={styles.parameter_time_view_text}>Time Extent (Year)</Text>
         <View style={styles.parameter_time_view_picker}>
           <Text style={styles.parameter_time_view_text}>From </Text>
-          <RNPickerSelect placeholder={{ label: 'Start Year', value: null }}
+
+          <RNPickerSelect placeholder={{ label: 'Start Year', value: null }} style={pickerStyle}
             onValueChange={(value) => setStartYear(value)}
             items={[
               { label: '2010', value: '2010' },
@@ -109,8 +139,10 @@ export default function ParameterScreen({ route, navigation }) {
               { label: '2019', value: '2019' }
             ]}
           />
+
+
           <Text style={styles.parameter_time_view_text}> To </Text>
-          <RNPickerSelect placeholder={{ label: 'End Year', value: null }}
+          <RNPickerSelect placeholder={{ label: 'End Year', value: null }} style={pickerStyle}
             onValueChange={(value) => setEndYear(value)}
             items={[
               { label: '2011', value: '2011' },
@@ -228,7 +260,8 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderRadius: 50,
     paddingHorizontal: 20,
-    backgroundColor: '#fc8f68'
+    backgroundColor: '#fc8f68',
+    marginVertical: 30
   },
   submit_btn_text: {
     fontSize: 28,
