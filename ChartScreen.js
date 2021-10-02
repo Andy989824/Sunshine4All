@@ -39,7 +39,7 @@ function ChartScreen({ route, navigation }) {
     return (
         <React.Fragment>
             <View>
-                <Text style={styles.title}>{params.map(el => el.type)}</Text>
+                <Text style={styles.title}>Result</Text>
             </View>
             <Tab.Navigator
                 screenOptions={{
