@@ -25,7 +25,7 @@ export default function ParameterScreen({ route, navigation }) {
   
     });
   
-    const [startYear, setStartYear] = useState('test');
+    const [startYear, setStartYear] = useState();
     const [endYear, setEndYear] = useState();
     
     const [UVChecked, setUVChecked] = useState();
@@ -86,6 +86,23 @@ export default function ParameterScreen({ route, navigation }) {
         console.log(APILink);
     }
 
+    const pickerStyle = {
+        inputIOS: {
+            color: 'white',
+            width: 150,
+            borderRadius: 5,
+        },
+        placeholder: {
+            color: 'grey',
+          },
+        inputAndroid: {
+            color: 'black',
+            width: 150,
+            borderRadius: 5,
+            
+        },
+    }; 
+
     return (
       <View style={styles.container}>
         {/* <Text style={styles.parameter_screen_title}>Parameters</Text> */}
@@ -98,7 +115,8 @@ export default function ParameterScreen({ route, navigation }) {
           <Text style={styles.parameter_time_view_text}>Time Extent (Year)</Text>
           <View style={styles.parameter_time_view_picker}>
             <Text style={styles.parameter_time_view_text}>From </Text>
-            <RNPickerSelect placeholder={{label: 'Start Year', value: null}}
+            
+            <RNPickerSelect placeholder={{label: 'Start Year', value: null}} style={pickerStyle}
                 onValueChange={(value) => setStartYear(value)}
                 items={[
                     { label: '2010', value: '2010' },
@@ -113,8 +131,10 @@ export default function ParameterScreen({ route, navigation }) {
                     { label: '2019', value: '2019' }
                 ]}
             />
+            
+            
             <Text style={styles.parameter_time_view_text}> To </Text>
-            <RNPickerSelect placeholder={{label: 'End Year', value: null}}
+            <RNPickerSelect placeholder={{label: 'End Year', value: null}} style={pickerStyle}
                 onValueChange={(value) => setEndYear(value)}
                 items={[
                     { label: '2011', value: '2011' },
@@ -232,7 +252,8 @@ export default function ParameterScreen({ route, navigation }) {
       borderWidth: 3,
       borderRadius: 50,
       paddingHorizontal: 20,
-      backgroundColor: '#fc8f68'
+      backgroundColor: '#fc8f68',
+      marginVertical: 30
     },
     submit_btn_text: {
       fontSize: 28,
