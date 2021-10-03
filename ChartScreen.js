@@ -143,7 +143,7 @@ function ChartScreen({ route, navigation }) {
     };
     function Charts({ navigation }) {
         return (
-            <React.Fragment stlye={{ backgroundColor: "#000000" }}>
+            <React.Fragment>
                 <ScrollView>
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
                         <Text style={styles.title2}>You are here!</Text>
@@ -305,30 +305,30 @@ function ChartScreen({ route, navigation }) {
 
     return (
         <React.Fragment>
-            {isLoading ? <Text>Loading...</Text> : (
-                <View>
+            {isLoading ? <View style={{flex: 1,justifyContent: "center", alignItems: "center"}}><Text style={{fontFamily:"Poppins_Medium", fontSize: 30, fontWeight: "bold"}}>Loading...</Text></View> : (
+                <>
                     <View>
                         <Text style={styles.title}>Result</Text>
                     </View>
                     <Tab.Navigator
                         screenOptions={{
                             tabBarLabelStyle: {
-                                fontFamily: "Poppins-Bold",
+                                fontFamily: "Poppins_Medium",
                                 fontSize: 16,
                                 color: "#000000",
                             },
                             tabBarStyle: { backgroundColor: "#ffa64d" },
                         }}
                         initialLayout={{
-                            width: Dimensions.get("window").width,
-                            height: Dimensions.get("window").height,
+                            width: Dimensions.get("screen").width,
+                            height: Dimensions.get("screen").height,
                         }}
                         tabBarPosition="top"
                     >
                         <Tab.Screen name="Charts" component={Charts} />
                         <Tab.Screen name="Analysis" component={Analysis} />
                     </Tab.Navigator>
-                </View>
+                </>
             )}
         </React.Fragment>
     );
@@ -345,7 +345,7 @@ function Analysis({ navigation }) {
                 <View style={{ width: "100%", alignItems: "center" }}>
                     <Text style={{ fontSize: 20 }}>Average Parameters</Text>
                     <View style={{ borderWidth: 1, borderColor: 'black', borderRadius: 4 }}>
-                        <Picker style={{ minWidth: 100, height: 20 }} itemStyle={{ height: 20 }} selectedValue={selectedPanel} onValueChange={(itemValue, itemIndex) => setSelectedPanel(itemValue)}>
+                        <Picker style={{ minWidth: 150, height: 20 }} itemStyle={{ height: 20 }} selectedValue={selectedPanel} onValueChange={(itemValue, itemIndex) => setSelectedPanel(itemValue)}>
                             <Picker.Item label="by month" value="month" />
                             <Picker.Item label="by year" value="year" />
                         </Picker>
