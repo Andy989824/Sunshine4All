@@ -38,6 +38,9 @@ export default function HomeScreen({ navigation }) {
         longitude: location.coords.longitude
       });
       //setLocation(location);
+      
+      
+      
       console.log('web');
     }
     else {

@@ -1,14 +1,16 @@
-import { View, Text, Button, Image, ScrollView, FlatList, addons } from "react-native";
+
+import { View, Text, Button, Image, ScrollView, TouchableOpacity } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Dimensions } from "react-native";
+
 import Constants from "expo-constants";
 import {
     LineChart,
 } from "react-native-chart-kit";
-import { Picker } from '@react-native-picker/picker';
-import React, { useState, useEffect } from 'react';
 import { useFonts } from 'expo-font';
-
+import React, { useState, useEffect } from 'react';
+import { Picker } from '@react-native-picker/picker';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -24,9 +26,8 @@ function ChartScreen({ route, navigation }) {
     const [isLoading, setLoading] = useState(true);
 
     const { APILink, cloudChecked, UVChecked, solarIrradianceChecked, temperatureChecked, humidityChecked } = route.params;
-
+    
     useEffect(() => {
-
         fetch(APILink)
             .then((response) => response.json())
             .then((json) => setParams(json))
@@ -341,64 +342,86 @@ function Analysis({ navigation }) {
     const [selectedPanel, setSelectedPanel] = useState();
 
     return (
-        <View style={{ backgroundColor: "yellow", flex: 1, justifyContent: "center" }}>
-            {/* average parameter */}
-            <View style={{ backgroundColor: "red", flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "space-around" }}>
-                <View style={{ backgroundColor: "orange", width: "100%", alignItems: "center" }}>
-                    <Text>Average Parameters</Text>
+        <View style={{ backgroundColor: "#fcd968", flex: 1, justifyContent: "center" }}>
+        {/* average parameter */}
+        <View style={{ flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "space-around" }}>
+            <View style={{ width: "100%", alignItems: "center" }}>
+                <Text style={{ fontSize: 30, fontWeight: "20%" }}>Average Parameters</Text>
+            </View>
+            <View style={{ borderRadius: 10, width: "80%", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                <View style={{ width: "49%" }}>
+                    <Text> Solar Intensity</Text>
+                    <Text> Solar Irradiance </Text>
+                    <Text> UVs Light</Text>
+                    <Text> Humidity</Text>
+                    <Text> Cloud Cover</Text>
+                    <Text> Temperature</Text>
                 </View>
-                <View style={{ backgroundColor: "white", width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
-                    <View style={{ backgroundColor: "tomato", width: "40%" }}>
-                        <Text style={{ backgroundColor: "cyan", flex: 1 }}> Solar Intensity</Text>
-                        <Text style={{ backgroundColor: "brown", flex: 1 }}> Solar Irradiance </Text>
-                        <Text style={{ backgroundColor: "cyan", flex: 1 }}> UVs Light</Text>
-                        <Text style={{ backgroundColor: "brown", flex: 1 }}> Humidity</Text>
-                        <Text style={{ backgroundColor: "cyan", flex: 1 }}> Cloud Cover</Text>
-                        <Text style={{ backgroundColor: "brown", flex: 1 }}> Temperature</Text>
+                <View style={{ width: "49%", textAlign: "center" }}>
+                    <Text>88 %</Text>
+                    <Text>88 W/m2</Text>
+                    <Text>88 mW/cm2</Text>
+                    <Text style={{ flex: 1 }}>88 %</Text>
+                    <Text style={{ flex: 1 }}>88 % </Text>
+                    <Text>88 Â°C</Text>
+                </View>
+            </View>
+        </View>
+
+        {/* sunshine power */}
+        <View style={{ backgroundColor: "#ffcb59", flex: 0.7, alignItems: "center", justifyContent: "center" }}>
+            <View style={{
+                borderRadius: 10, width: "80%", alignItems: "center"
+            }}>
+                <Text style={{ textAlign: "center" }}>Average Sunshine Power</Text>
+                <Text style={{ textAlign: "center", fontSize: 40, fontWeight: "bold" }}>88%</Text>
+            </View>
+
+        </View>
+
+        {/* Estimate Power Generation */}
+        <View style={{ flex: 1.3, alignItems: "center", justifyContent: "space-evenly" }}>
+            <View style={{ width: "80%" }}>
+                <View style={{ width: "100%", alignItems: "center" }}>
+                    <Text style={{ color: "red", fontWeight: "50%" }}>*Please select a solar panel</Text>
+                </View>
+                <View style={{ width: "100%", alignItems: "center", flexDirection: "row", justifyContent: "space-between" }}>
+                    <View style={{ borderWidth: 1, borderColor: 'black', borderRadius: 4 }}>
+                        <Picker style={{ width: 200, height: 25 }} itemStyle={{ height: 25 }} selectedValue={selectedPanel} onValueChange={(itemValue, itemIndex) => setSelectedPanel(itemValue)}>
+                            <Picker.Item label="Solar Panel 01" value="solarpanel01" />
+                            <Picker.Item label="Solar Panel AA" value="solarpanel02" />
+                            <Picker.Item label="Solar Panel Z1" value="solarpanel03" />
+                            <Picker.Item label="Solar Panel 2A" value="solarpanel04" />
+                        </Picker>
                     </View>
-                    <View style={{ backgroundColor: "tomato", width: "40%", textAlign: "center" }}>
-                        <Text style={{ backgroundColor: "purple", flex: 1 }}>123</Text>
-                        <Text style={{ backgroundColor: "grey", flex: 1 }}>123</Text>
-                        <Text style={{ backgroundColor: "purple", flex: 1 }}>123</Text>
-                        <Text style={{ backgroundColor: "grey", flex: 1 }}>123</Text>
-                        <Text style={{ backgroundColor: "purple", flex: 1 }}>123</Text>
-                        <Text style={{ backgroundColor: "grey", flex: 1 }}>123</Text>
+                    
+                    <View style={{ height: 20, alignItems: "center", justifyContent: "center" }}>
+                        <TouchableOpacity style={{ borderWidth: 1, borderRadius: 50, backgroundColor: '#fc8f68', paddingHorizontal: 10 }}>
+                            <Text style={{}}>Calculate</Text>
+                        </TouchableOpacity>
+
+                    </View>
+                    <View style={{ alignItems: "center", justifyContent: "center" }} >
+                        <TouchableOpacity style={{ borderWidth: 1, borderRadius: 50, backgroundColor: '#fc8f68', paddingHorizontal: 10 }}>
+                            <Text>+</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </View>
 
-            {/* sunshine power */}
-            <View style={{ backgroundColor: "green", flex: 1, alignItems: "center", justifyContent: "center" }}>
-                <View style={{ backgroundColor: "lightblue", width: "80%", alignItems: "center" }}>
-                    <Text style={{ textAlign: "center", fontSize: 20 }}>Average Sunshine Power</Text>
-                    <Text style={{ textAlign: "center", fontSize: 40, fontWeight: "bold" }}>88%</Text>
-                </View>
-
+            <View style={{ width: "100%", alignItems: "center" }}>
+                <Text style={{ fontSize: 30, fontWeight: "20%" }}>Estimated Power Generation</Text>
             </View>
-
-            {/* Estimate Power Generation */}
-            <View style={{ backgroundColor: "blue", flex: 1, alignItems: "center", justifyContent: "center" }}>
-                <View style={{ backgroundColor: "lightgrey", flex: 0.3, width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "space-around" }}>
-                    <Picker selectedValue={selectedPanel} onValueChange={(itemValue, itemIndex) => setSelectedPanel(itemValue)}>
-                        <Picker.Item label="Solar Panel01" value="solarPanel01" />
-                        <Picker.Item label="Solar Panel02" value="solarPanel02" />
-                        <Picker.Item label="Solar Panel03" value="solarPanel03" />
-                        <Picker.Item label="Solar Panel04" value="solarPanel04" />
-                    </Picker>
-                    <View style={{ backgroundColor: "white", height: 20 }}>Calculate</View>
-                    <View style={{ backgroundColor: "black", width: 20, height: 20 }} />
-                </View>
-                <View style={{ backgroundColor: "lightgreen", flex: 0.7, width: "100%", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                    <View style={{ backgroundColor: "tomato", width: "80%" }}>
-                        <Text style={{ backgroundColor: "cyan", flex: 1 }}>Estimated Power Generation</Text>
-                        <Text style={{ backgroundColor: "brown", flex: 1 }}>1234 kJ/ day</Text>
-                        <Text style={{ backgroundColor: "cyan", flex: 1 }}>1234 kJ/ week</Text>
-                        <Text style={{ backgroundColor: "brown", flex: 1 }}>1234 kJ/ month</Text>
-                        <Text style={{ backgroundColor: "cyan", flex: 1 }}>1234 kJ/ year</Text>
-                    </View>
+            <View style={{ width: "100%", flexDirection: "column", alignItems: "center", justifyContent: "space-around" }}>
+                <View style={{ backgroundColor: "#fcd968", borderRadius: 10, width: "80%" }}>
+                    <Text> 1234 kJ/ day</Text>
+                    <Text> 1234 kJ/ week</Text>
+                    <Text> 1234 kJ/ month</Text>
+                    <Text> 1234 kJ/ year</Text>
                 </View>
             </View>
-        </View >
+        </View>
+    </View >
     );
 }
 
