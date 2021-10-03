@@ -1,4 +1,4 @@
-import * as React from "react";
+
 import { View, Text, Button, Image, ScrollView } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Dimensions } from "react-native";
@@ -12,7 +12,7 @@ import {
     ContributionGraph,
     StackedBarChart,
 } from "react-native-chart-kit";
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Picker } from '@react-native-picker/picker';
 
 
@@ -20,45 +20,55 @@ const Tab = createMaterialTopTabNavigator();
 
 function ChartScreen({ route, navigation }) {
 
-    const [params, setParams] = React.useState([]);
+    const [params, setParams] = useState([]);
+    const [isLoading, setLoading] = useState(true);
 
     const { APILink, cloudChecked, UVChecked, solarIrradianceChecked, temperatureChecked, humidityChecked } = route.params;
 
     console.log(params)
 
-    React.useEffect(() => {
+    useEffect(() => {
         fetch(APILink)
             .then((response) => response.json())
-            .then((json) => setParams(json.CLOUD_AMT))
+            .then((json) => setParams(json))
             .catch((error) => console.error(error))
-        // .finally(() => setLoading(false));
-
+            .finally(() => setLoading(false));
+        
     }, []);
-    console.log(APILink)
-    console.log(cloudChecked)
+    console.log(APILink);
+    console.log(params)
+    //console.log(cloudChecked)
+    
     return (
+        
         <React.Fragment>
-            <View>
-                <Text style={styles.title}>Result</Text>
-            </View>
-            <Tab.Navigator
-                screenOptions={{
-                    tabBarLabelStyle: {
-                        fontFamily: "Poppins-Bold",
-                        fontSize: 16,
-                        color: "#000000",
-                    },
-                    tabBarStyle: { backgroundColor: "#ffa64d" },
-                }}
-                initialLayout={{
-                    width: Dimensions.get("window").width,
-                    height: Dimensions.get("window").height,
-                }}
-                tabBarPosition="top"
-            >
-                <Tab.Screen name="Charts" component={Charts} />
-                <Tab.Screen name="Analysis" component={Analysis} />
-            </Tab.Navigator>
+            {isLoading ? <Text>Loading...</Text> : (
+                <View>
+                    <View>
+                        <Text style={styles.title}>{params.properties.parameter.CLOUD_AMT.JAN}</Text>
+                    </View>
+                    <Tab.Navigator
+                        screenOptions={{
+                            tabBarLabelStyle: {
+                                fontFamily: "Poppins-Bold",
+                                fontSize: 16,
+                                color: "#000000",
+                            },
+                            tabBarStyle: { backgroundColor: "#ffa64d" },
+                        }}
+                        initialLayout={{
+                            width: Dimensions.get("window").width,
+                            height: Dimensions.get("window").height,
+                        }}
+                        tabBarPosition="top"
+                    >
+                        <Tab.Screen name="Charts" component={Charts} />
+                        <Tab.Screen name="Analysis" component={Analysis} />
+                    </Tab.Navigator>
+                </View>
+                
+            )}
+            
         </React.Fragment>
     );
 }
