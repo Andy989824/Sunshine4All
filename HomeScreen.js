@@ -1,30 +1,18 @@
-import { setStatusBarBackgroundColor, StatusBar } from 'expo-status-bar';
-import React, {useCallback, useEffect, useState} from 'react';
+import { StatusBar } from 'expo-status-bar';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View, FlatList, TouchableOpacity, Platform } from 'react-native';
 import { useFonts } from 'expo-font';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Picker } from '@react-native-picker/picker';
-import Checkbox from 'expo-checkbox';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Location from 'expo-location';
-
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-import cover from './assets/cover-screen-img.png';
 import home from './assets/home-screen-img.png';
-import button_icon from './assets/select-location-icon.png';
 
-
-
-
-export default function HomeScreen({navigation}) {
+export default function HomeScreen({ navigation }) {
   const [loaded] = useFonts({
     Poppins_Medium: require('./assets/Poppins-Medium.ttf'),
     Poppins_Light: require('./assets/Poppins-Light.ttf')
 
   });
-  
+
   //Get user's location
   const [location, setLocation] = useState();
   const [errorMsg, setErrorMsg] = useState();
@@ -33,7 +21,7 @@ export default function HomeScreen({navigation}) {
 
   async function getLocation() {
 
-    let {status} = await Location.requestForegroundPermissionsAsync();
+    let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
       setErrorMsg('Permission to access location was denied');
       return;
@@ -69,12 +57,12 @@ export default function HomeScreen({navigation}) {
 
       await Location.enableNetworkProviderAsync().then().catch(_ => null);
       const status = await Location.hasServicesEnabledAsync();
-      if(status){
+      if (status) {
         const getCurrentPosition = async () => await Location.getCurrentPositionAsync()
-                                          .then(loc => loc)
-                                          .catch(_ => null)
+          .then(loc => loc)
+          .catch(_ => null)
         let location = await getCurrentPosition();
-        while(location === null){
+        while (location === null) {
           location = await getCurrentPosition();
         }
         console.log(JSON.stringify(location.coords.latitude));
@@ -85,14 +73,14 @@ export default function HomeScreen({navigation}) {
           longitude: location.coords.longitude
         });
         //return location;
-      }else{
+      } else {
         throw new Error("Please activate the location");
       }
-      
+
       console.log('android or ios');
     }
 
-    
+
 
     // await Location.enableNetworkProviderAsync().then().catch(_ => null);
     // const status = await Location.hasServicesEnabledAsync();
@@ -109,8 +97,8 @@ export default function HomeScreen({navigation}) {
     //   throw new Error("Please activate the location");
     // }
 
-    
-    
+
+
   }
 
 
@@ -144,14 +132,14 @@ export default function HomeScreen({navigation}) {
     return null;
   }
 
-  
+
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      
-      
+
+
       <Text style={styles.home_screen_title}>Welcome!</Text>
-      <Image source={home} style={{width: 350, height: 350}} />
+      <Image source={home} style={{ width: 350, height: 350 }} />
       <TouchableOpacity style={styles.home_button} onPress={() => getLocation()}>
         <Text style={styles.home_button_text}>Locate Yourself</Text>
       </TouchableOpacity>
@@ -160,11 +148,11 @@ export default function HomeScreen({navigation}) {
         <Text style={styles.home_screen_description_text}>on the sunshine</Text>
         <Text style={styles.home_screen_description_text}>around you</Text>
       </View>
-      
-      
+
+
       <StatusBar style="auto" />
     </View>
-    
+
   );
 }
 
@@ -198,5 +186,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Poppins_Light'
   }
-  
+
 });

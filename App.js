@@ -6,17 +6,19 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import HomeScreen from './HomeScreen';
 import ParameterScreen from './ParameterScreen';
+import ChartScreen from './ChartScreen';
 
 //Stack Navigator
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-    return (
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName='Home'>
-                <Stack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }} />
-                <Stack.Screen name='Parameter' component={ParameterScreen} options={{headerTitleAlign: 'center', headerStyle:{backgroundColor: '#fff'}, headerTitleStyle:{fontFamily: 'Poppins_Medium', fontSize: 30, fontWeight: 'bold'}}} />
-            </Stack.Navigator>
-        </NavigationContainer>
-    );
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName='Home'>
+        <Stack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='Chart' component={ChartScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='Parameter' component={ParameterScreen} options={{ headerTitleAlign: 'center', headerStyle: { backgroundColor: '#fff' }, headerTitleStyle: { fontFamily: 'Poppins_Medium', fontSize: 30, fontWeight: 'bold' } }} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }
