@@ -1,164 +1,341 @@
-import * as React from "react";
-import { View, Text, Button, Image, ScrollView } from "react-native";
+import { View, Text, Button, Image, ScrollView, FlatList, addons } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Dimensions } from "react-native";
-import PoppinsItalic from "./assets/fonts/Poppins-Italic.ttf";
 import Constants from "expo-constants";
 import {
     LineChart,
-    BarChart,
-    PieChart,
-    ProgressChart,
-    ContributionGraph,
-    StackedBarChart,
 } from "react-native-chart-kit";
-import { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
+import React, { useState, useEffect } from 'react';
+import { useFonts } from 'expo-font';
 
 
 const Tab = createMaterialTopTabNavigator();
 
 function ChartScreen({ route, navigation }) {
 
-    const [params, setParams] = React.useState([]);
+    const [loaded] = useFonts({
+        Poppins_Medium: require('./assets/fonts/Poppins-Medium.ttf'),
+        Poppins_Light: require('./assets/fonts/Poppins-Light.ttf')
+
+    });
+
+    const [params, setParams] = useState([]);
+    const [isLoading, setLoading] = useState(true);
 
     const { APILink, cloudChecked, UVChecked, solarIrradianceChecked, temperatureChecked, humidityChecked } = route.params;
 
-    console.log(params)
+    useEffect(() => {
 
-    React.useEffect(() => {
         fetch(APILink)
             .then((response) => response.json())
-            .then((json) => setParams(json.CLOUD_AMT))
+            .then((json) => setParams(json))
             .catch((error) => console.error(error))
-        // .finally(() => setLoading(false));
+            .finally(() => setLoading(false));
 
     }, []);
-    console.log(APILink)
-    console.log(cloudChecked)
+
+    let cloud_data = [];
+    let uv_data = [];
+    let solar_data = [];
+    let temp_data = [];
+    let humidity_data = [];
+
+
+    if (params.length != 0) {
+        if (cloudChecked) {
+            delete params.properties.parameter.CLOUD_AMT.ANN;
+            cloud_data = JSON.stringify(params.properties.parameter.CLOUD_AMT)
+            cloud_data = cloud_data.replace(/([a-zA-Z])/g, "");
+            cloud_data = cloud_data.replace(/:\s*/g, "");
+            cloud_data = cloud_data.replace(/"/g, "");
+            cloud_data = cloud_data.replace('{', '')
+            cloud_data = cloud_data.replace('}', '')
+            cloud_data = cloud_data.split(',').map(Number);
+        }
+        if (UVChecked) {
+            uv_data = JSON.stringify(params.properties.parameter.ALLSKY_SFC_UVA)
+            // data = data.splice(-1)
+            uv_data = uv_data.replace(/([a-zA-Z])/g, "");
+            uv_data = uv_data.replace(/:\s*/g, "");
+            uv_data = uv_data.replace(/"/g, "");
+            uv_data = uv_data.replace('{', '')
+            uv_data = uv_data.replace('}', '')
+            uv_data = uv_data.split(',').map(Number);
+        }
+        if (solarIrradianceChecked) {
+            delete params.properties.parameter.SI_EF_TILTED_SURFACE_HORIZONTAL.ANN;
+            solar_data = JSON.stringify(params.properties.parameter.SI_EF_TILTED_SURFACE_HORIZONTAL)
+            solar_data = solar_data.replace(/([a-zA-Z])/g, "");
+            solar_data = solar_data.replace(/:\s*/g, "");
+            solar_data = solar_data.replace(/"/g, "");
+            solar_data = solar_data.replace('{', '')
+            solar_data = solar_data.replace('}', '')
+            solar_data = solar_data.split(',').map(Number);
+        }
+        if (temperatureChecked) {
+            delete params.properties.parameter.T2M.ANN;
+            temp_data = JSON.stringify(params.properties.parameter.T2M)
+            temp_data = temp_data.replace(/([a-zA-Z])/g, "");
+            temp_data = temp_data.replace(/:\s*/g, "");
+            temp_data = temp_data.replace(/"/g, "");
+            temp_data = temp_data.replace('{', '')
+            temp_data = temp_data.replace('}', '')
+            temp_data = temp_data.split(',').map(Number);
+        }
+        if (humidityChecked) {
+            delete params.properties.parameter.RH2M.ANN;
+            humidity_data = JSON.stringify(params.properties.parameter.RH2M)
+            humidity_data = humidity_data.replace(/([a-zA-Z])/g, "");
+            humidity_data = humidity_data.replace(/:\s*/g, "");
+            humidity_data = humidity_data.replace(/"/g, "");
+            humidity_data = humidity_data.replace('{', '')
+            humidity_data = humidity_data.replace('}', '')
+            humidity_data = humidity_data.split(',').map(Number);
+        }
+    }
+    else
+        console.log('not yet')
+
+    const cloud_line = {
+        labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        datasets: [
+            {
+                data: cloud_data,
+                strokeWidth: 2, // optional
+            },
+        ],
+    };
+
+    const uv_line = {
+        labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        datasets: [
+            {
+                data: uv_data,
+                strokeWidth: 2, // optional
+            },
+        ],
+    };
+    const solar_line = {
+        labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        datasets: [
+            {
+                data: solar_data,
+                strokeWidth: 2, // optional
+            },
+        ],
+    };
+    const temp_line = {
+        labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        datasets: [
+            {
+                data: temp_data,
+                strokeWidth: 2, // optional
+            },
+        ],
+    };
+    const humidity_line = {
+        labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        datasets: [
+            {
+                data: humidity_data,
+                strokeWidth: 2, // optional
+            },
+        ],
+    };
+    function Charts({ navigation }) {
+        return (
+            <React.Fragment stlye={{ backgroundColor: "#000000" }}>
+                <ScrollView>
+                    <View style={{ alignItems: "center", justifyContent: "center" }}>
+                        <Text style={styles.title2}>You are here!</Text>
+                        <Text style={styles.title3}>Miri, Sarawak</Text>
+                    </View>
+                    <View
+                        style={{
+                            marginTop: 10,
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Image
+                            source={require("./assets/asd.png")}
+                            style={{ width: 300, height: 200 }}
+                        />
+                    </View>
+                    {cloudChecked ?
+                        <View style={{ alignItems: "center" }}>
+                            <Text style={{ fontFamily: 'Poppins_Medium' }}>Cloud against Time</Text>
+                            <LineChart
+                                data={cloud_line}
+                                width={Dimensions.get("window").width} // from react-native
+                                height={120}
+                                yAxisLabel={""}
+                                chartConfig={{
+                                    backgroundColor: "#e26a00",
+                                    backgroundGradientFrom: "#fb8c00",
+                                    backgroundGradientTo: "#ffa726",
+                                    decimalPlaces: 2, // optional, defaults to 2dp
+                                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                    style: {
+                                        borderRadius: 1,
+                                    },
+                                }}
+                                bezier
+                                style={{
+                                    marginVertical: 8,
+                                    borderRadius: 16,
+                                }}
+                            />
+                        </View>
+                        : <></>
+                    }
+                    {UVChecked ?
+                        <View style={{ alignItems: "center" }}>
+                            <Text style={{ fontFamily: 'Poppins_Medium' }}>UV against Time</Text>
+                            <LineChart
+                                data={uv_line}
+                                width={Dimensions.get("window").width} // from react-native
+                                height={120}
+                                yAxisLabel={""}
+                                chartConfig={{
+                                    backgroundColor: "#e26a00",
+                                    backgroundGradientFrom: "#fb8c00",
+                                    backgroundGradientTo: "#ffa726",
+                                    decimalPlaces: 2, // optional, defaults to 2dp
+                                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                    style: {
+                                        borderRadius: 1,
+                                    },
+                                }}
+                                bezier
+                                style={{
+                                    marginVertical: 8,
+                                    borderRadius: 16,
+                                }}
+                            />
+                        </View>
+                        : <></>
+                    }
+                    {solarIrradianceChecked ?
+                        <View style={{ alignItems: "center" }}>
+                            <Text style={{ fontFamily: 'Poppins_Medium' }}>Solar Irradiance against Time</Text>
+                            <LineChart
+                                data={solar_line}
+                                width={Dimensions.get("window").width} // from react-native
+                                height={120}
+                                yAxisLabel={""}
+                                chartConfig={{
+                                    backgroundColor: "#e26a00",
+                                    backgroundGradientFrom: "#fb8c00",
+                                    backgroundGradientTo: "#ffa726",
+                                    decimalPlaces: 2, // optional, defaults to 2dp
+                                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                    style: {
+                                        borderRadius: 1,
+                                    },
+                                }}
+                                bezier
+                                style={{
+                                    marginVertical: 8,
+                                    borderRadius: 16,
+                                }}
+                            />
+                        </View>
+                        : <></>
+                    }
+                    {temperatureChecked ?
+                        <View style={{ alignItems: "center" }}>
+                            <Text style={{ fontFamily: 'Poppins_Medium' }}> Temperature against Time</Text>
+                            <LineChart
+                                data={temp_line}
+                                width={Dimensions.get("window").width} // from react-native
+                                height={120}
+                                yAxisLabel={""}
+                                chartConfig={{
+                                    backgroundColor: "#e26a00",
+                                    backgroundGradientFrom: "#fb8c00",
+                                    backgroundGradientTo: "#ffa726",
+                                    decimalPlaces: 2, // optional, defaults to 2dp
+                                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                    style: {
+                                        borderRadius: 1,
+                                    },
+                                }}
+                                bezier
+                                style={{
+                                    marginVertical: 8,
+                                    borderRadius: 16,
+                                }}
+                            />
+                        </View>
+                        : <></>
+                    }
+                    {humidityChecked ?
+                        <View style={{ alignItems: "center" }}>
+                            <Text style={{ fontFamily: 'Poppins_Medium' }}>Humidity against Time</Text>
+                            <LineChart
+                                data={humidity_line}
+                                width={Dimensions.get("window").width} // from react-native
+                                height={120}
+                                yAxisLabel={""}
+                                chartConfig={{
+                                    backgroundColor: "#e26a00",
+                                    backgroundGradientFrom: "#fb8c00",
+                                    backgroundGradientTo: "#ffa726",
+                                    decimalPlaces: 2, // optional, defaults to 2dp
+                                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                    style: {
+                                        borderRadius: 1,
+                                    },
+                                }}
+                                bezier
+                                style={{
+                                    marginVertical: 8,
+                                    borderRadius: 16,
+                                }}
+                            />
+                        </View>
+                        : <></>
+                    }
+
+
+                </ScrollView>
+            </React.Fragment>
+        );
+    }
+
     return (
         <React.Fragment>
-            <View>
-                <Text style={styles.title}>Result</Text>
-            </View>
-            <Tab.Navigator
-                screenOptions={{
-                    tabBarLabelStyle: {
-                        fontFamily: "Poppins-Bold",
-                        fontSize: 16,
-                        color: "#000000",
-                    },
-                    tabBarStyle: { backgroundColor: "#ffa64d" },
-                }}
-                initialLayout={{
-                    width: Dimensions.get("window").width,
-                    height: Dimensions.get("window").height,
-                }}
-                tabBarPosition="top"
-            >
-                <Tab.Screen name="Charts" component={Charts} />
-                <Tab.Screen name="Analysis" component={Analysis} />
-            </Tab.Navigator>
+            {isLoading ? <Text>Loading...</Text> : (
+                <View>
+                    <View>
+                        <Text style={styles.title}>Result</Text>
+                    </View>
+                    <Tab.Navigator
+                        screenOptions={{
+                            tabBarLabelStyle: {
+                                fontFamily: "Poppins-Bold",
+                                fontSize: 16,
+                                color: "#000000",
+                            },
+                            tabBarStyle: { backgroundColor: "#ffa64d" },
+                        }}
+                        initialLayout={{
+                            width: Dimensions.get("window").width,
+                            height: Dimensions.get("window").height,
+                        }}
+                        tabBarPosition="top"
+                    >
+                        <Tab.Screen name="Charts" component={Charts} />
+                        <Tab.Screen name="Analysis" component={Analysis} />
+                    </Tab.Navigator>
+                </View>
+            )}
         </React.Fragment>
     );
 }
-function Charts({ navigation }) {
-    return (
-        <React.Fragment stlye={{ backgroundColor: "#000000" }}>
-            <ScrollView>
-                <View style={{ alignItems: "center", justifyContent: "center" }}>
-                    <Text style={styles.title2}>You are here!</Text>
-                    <Text style={styles.title3}>Miri, Sarawak</Text>
-                </View>
-                <View
-                    style={{
-                        marginTop: 10,
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}
-                >
-                    <Image
-                        source={require("./assets/asd.png")}
-                        style={{ width: 300, height: 200 }}
-                    />
-                </View>
-                <View style={{ alignItems: "center" }}>
-                    <Text>Solar iiradiance against Time</Text>
-                    <LineChart
-                        data={line}
-                        width={Dimensions.get("window").width} // from react-native
-                        height={120}
-                        yAxisLabel={"$"}
-                        chartConfig={{
-                            backgroundColor: "#e26a00",
-                            backgroundGradientFrom: "#fb8c00",
-                            backgroundGradientTo: "#ffa726",
-                            decimalPlaces: 2, // optional, defaults to 2dp
-                            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                            style: {
-                                borderRadius: 1,
-                            },
-                        }}
-                        bezier
-                        style={{
-                            marginVertical: 8,
-                            borderRadius: 16,
-                        }}
-                    />
-                </View>
-                <View style={{ alignItems: "center" }}>
-                    <Text>Cloud amount against Time</Text>
-                    <LineChart
-                        data={line}
-                        width={Dimensions.get("window").width} // from react-native
-                        height={120}
-                        yAxisLabel={"$"}
-                        chartConfig={{
-                            backgroundColor: "#e26a00",
-                            backgroundGradientFrom: "#fb8c00",
-                            backgroundGradientTo: "#ffa726",
-                            decimalPlaces: 2, // optional, defaults to 2dp
-                            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                            style: {
-                                borderRadius: 1,
-                            },
-                        }}
-                        bezier
-                        style={{
-                            marginVertical: 8,
-                            borderRadius: 16,
-                        }}
-                    />
-                </View>
-                <View style={{ alignItems: "center" }}>
-                    <Text>Temperature against Time</Text>
-                    <LineChart
-                        data={line}
-                        width={Dimensions.get("window").width} // from react-native
-                        height={120}
-                        yAxisLabel={"$"}
-                        chartConfig={{
-                            backgroundColor: "#e26a00",
-                            backgroundGradientFrom: "#fb8c00",
-                            backgroundGradientTo: "#ffa726",
-                            decimalPlaces: 2, // optional, defaults to 2dp
-                            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                            style: {
-                                borderRadius: 1,
-                            },
-                        }}
-                        bezier
-                        style={{
-                            marginVertical: 8,
-                            borderRadius: 16,
-                        }}
-                    />
-                </View>
 
-            </ScrollView>
-        </React.Fragment>
-    );
-}
 function Analysis({ navigation }) {
 
     const [selectedPanel, setSelectedPanel] = useState();
@@ -224,20 +401,12 @@ function Analysis({ navigation }) {
         </View >
     );
 }
-const line = {
-    labels: ["January", "February", "March", "April", "May", "June"],
-    datasets: [
-        {
-            data: [20, 45, 28, 80, 99, 43],
-            strokeWidth: 2, // optional
-        },
-    ],
-};
+
 
 const styles = {
     title: {
         fontSize: 25,
-        fontFamily: "Poppins-Bold",
+        fontFamily: "Poppins_Medium",
         color: "#000000",
         textAlign: "center",
         paddingTop: 10,
@@ -248,8 +417,8 @@ const styles = {
     title2: {
         marginTop: 10,
         fontSize: 20,
-        fontFamily: PoppinsItalic,
+        fontFamily: 'Poppins_Medium',
     },
-    title3: { fontSize: 21, fontWeight: "700", fontFamily: "Poppins-Bold" },
+    title3: { fontSize: 21, fontWeight: "700", fontFamily: "Poppins_Medium" },
 };
 export default ChartScreen;
