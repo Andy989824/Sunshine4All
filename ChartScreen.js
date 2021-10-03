@@ -10,7 +10,6 @@ import {
 import { useFonts } from 'expo-font';
 import React, { useState, useEffect } from 'react';
 import { Picker } from '@react-native-picker/picker';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -146,7 +145,7 @@ function ChartScreen({ route, navigation }) {
     };
     function Charts({ navigation }) {
         return (
-            <React.Fragment stlye={{ backgroundColor: "#000000" }}>
+            <React.Fragment>
                 <ScrollView>
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
                         <Text style={styles.title2}>You are here!</Text>
@@ -308,30 +307,30 @@ function ChartScreen({ route, navigation }) {
 
     return (
         <React.Fragment>
-            {isLoading ? <Text>Loading...</Text> : (
-                <View>
+            {isLoading ? <View style={{flex: 1,justifyContent: "center", alignItems: "center"}}><Text style={{fontFamily:"Poppins_Medium", fontSize: 30, fontWeight: "bold"}}>Loading...</Text></View> : (
+                <>
                     <View>
                         <Text style={styles.title}>Result</Text>
                     </View>
                     <Tab.Navigator
                         screenOptions={{
                             tabBarLabelStyle: {
-                                fontFamily: "Poppins-Bold",
+                                fontFamily: "Poppins_Medium",
                                 fontSize: 16,
                                 color: "#000000",
                             },
                             tabBarStyle: { backgroundColor: "#ffa64d" },
                         }}
                         initialLayout={{
-                            width: Dimensions.get("window").width,
-                            height: Dimensions.get("window").height,
+                            width: Dimensions.get("screen").width,
+                            height: Dimensions.get("screen").height,
                         }}
                         tabBarPosition="top"
                     >
                         <Tab.Screen name="Charts" component={Charts} />
                         <Tab.Screen name="Analysis" component={Analysis} />
                     </Tab.Navigator>
-                </View>
+                </>
             )}
         </React.Fragment>
     );
@@ -343,85 +342,95 @@ function Analysis({ navigation }) {
 
     return (
         <View style={{ backgroundColor: "#fcd968", flex: 1, justifyContent: "center" }}>
-        {/* average parameter */}
-        <View style={{ flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "space-around" }}>
-            <View style={{ width: "100%", alignItems: "center" }}>
-                <Text style={{ fontSize: 30, fontWeight: "20%" }}>Average Parameters</Text>
-            </View>
-            <View style={{ borderRadius: 10, width: "80%", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
-                <View style={{ width: "49%" }}>
-                    <Text> Solar Intensity</Text>
-                    <Text> Solar Irradiance </Text>
-                    <Text> UVs Light</Text>
-                    <Text> Humidity</Text>
-                    <Text> Cloud Cover</Text>
-                    <Text> Temperature</Text>
-                </View>
-                <View style={{ width: "49%", textAlign: "center" }}>
-                    <Text>88 %</Text>
-                    <Text>88 W/m2</Text>
-                    <Text>88 mW/cm2</Text>
-                    <Text style={{ flex: 1 }}>88 %</Text>
-                    <Text style={{ flex: 1 }}>88 % </Text>
-                    <Text>88 Â°C</Text>
-                </View>
-            </View>
-        </View>
-
-        {/* sunshine power */}
-        <View style={{ backgroundColor: "#ffcb59", flex: 0.7, alignItems: "center", justifyContent: "center" }}>
-            <View style={{
-                borderRadius: 10, width: "80%", alignItems: "center"
-            }}>
-                <Text style={{ textAlign: "center" }}>Average Sunshine Power</Text>
-                <Text style={{ textAlign: "center", fontSize: 40, fontWeight: "bold" }}>88%</Text>
-            </View>
-
-        </View>
-
-        {/* Estimate Power Generation */}
-        <View style={{ flex: 1.3, alignItems: "center", justifyContent: "space-evenly" }}>
-            <View style={{ width: "80%" }}>
+            {/* average parameter */}
+            <View style={{ flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "space-around" }}>
                 <View style={{ width: "100%", alignItems: "center" }}>
-                    <Text style={{ color: "red", fontWeight: "50%" }}>*Please select a solar panel</Text>
-                </View>
-                <View style={{ width: "100%", alignItems: "center", flexDirection: "row", justifyContent: "space-between" }}>
+                    <Text style={{ fontSize: 20 }}>Average Parameters</Text>
                     <View style={{ borderWidth: 1, borderColor: 'black', borderRadius: 4 }}>
-                        <Picker style={{ width: 200, height: 25 }} itemStyle={{ height: 25 }} selectedValue={selectedPanel} onValueChange={(itemValue, itemIndex) => setSelectedPanel(itemValue)}>
-                            <Picker.Item label="Solar Panel 01" value="solarpanel01" />
-                            <Picker.Item label="Solar Panel AA" value="solarpanel02" />
-                            <Picker.Item label="Solar Panel Z1" value="solarpanel03" />
-                            <Picker.Item label="Solar Panel 2A" value="solarpanel04" />
+                        <Picker style={{ minWidth: 150, height: 20 }} itemStyle={{ height: 20 }} selectedValue={selectedPanel} onValueChange={(itemValue, itemIndex) => setSelectedPanel(itemValue)}>
+                            <Picker.Item label="by month" value="month" />
+                            <Picker.Item label="by year" value="year" />
                         </Picker>
                     </View>
-                    
-                    <View style={{ height: 20, alignItems: "center", justifyContent: "center" }}>
-                        <TouchableOpacity style={{ borderWidth: 1, borderRadius: 50, backgroundColor: '#fc8f68', paddingHorizontal: 10 }}>
-                            <Text style={{}}>Calculate</Text>
-                        </TouchableOpacity>
-
+                </View>
+                <View style={{ borderWidth: 3, borderColor: "black", borderRadius: 10, width: "80%", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                    <View style={{ width: "59%" }}>
+                        <Text> Solar Intensity</Text>
+                        <Text> Solar Irradiance </Text>
+                        <Text> UVs Light</Text>
+                        <Text> Humidity</Text>
+                        <Text> Cloud Cover</Text>
+                        <Text> Temperature</Text>
                     </View>
-                    <View style={{ alignItems: "center", justifyContent: "center" }} >
-                        <TouchableOpacity style={{ borderWidth: 1, borderRadius: 50, backgroundColor: '#fc8f68', paddingHorizontal: 10 }}>
-                            <Text>+</Text>
-                        </TouchableOpacity>
+                    <View style={{ width: "39%" }}>
+                        <Text>88 %</Text>
+                        <Text>8888 W/m2</Text>
+                        <Text>8888 mW/cm2</Text>
+                        <Text>88 %</Text>
+                        <Text>88 %</Text>
+                        <Text>88 Â°C</Text>
                     </View>
                 </View>
             </View>
 
-            <View style={{ width: "100%", alignItems: "center" }}>
-                <Text style={{ fontSize: 30, fontWeight: "20%" }}>Estimated Power Generation</Text>
+            {/* sunshine power */}
+            <View style={{ backgroundColor: "#ffcb59", flex: 0.7, alignItems: "center", justifyContent: "center" }}>
+                <View style={{ borderRadius: 10, width: "80%", alignItems: "center" }}>
+                    <Text style={{ textAlign: "center" }}>Average Sunshine Power</Text>
+                    <Text style={{ textAlign: "center", fontSize: 40, fontWeight: "bold" }}>88%</Text>
+                </View>
+
             </View>
-            <View style={{ width: "100%", flexDirection: "column", alignItems: "center", justifyContent: "space-around" }}>
-                <View style={{ backgroundColor: "#fcd968", borderRadius: 10, width: "80%" }}>
-                    <Text> 1234 kJ/ day</Text>
-                    <Text> 1234 kJ/ week</Text>
-                    <Text> 1234 kJ/ month</Text>
-                    <Text> 1234 kJ/ year</Text>
+
+            {/* Estimate Power Generation */}
+            <View style={{ flex: 1.3, alignItems: "center", justifyContent: "space-evenly" }}>
+                <View style={{ width: "80%" }}>
+                    <View style={{ width: "100%", alignItems: "center" }}>
+                        <Text style={{ color: "red", fontWeight: "50%" }}>*Please select a solar panel</Text>
+                    </View>
+                    <View style={{ width: "100%", alignItems: "center", flexDirection: "row", justifyContent: "space-between" }}>
+                        <View style={{ borderWidth: 1, borderColor: 'black', borderRadius: 4 }}>
+                            <Picker style={{ width: 200, height: 25 }} itemStyle={{ height: 25 }} selectedValue={selectedPanel} onValueChange={(itemValue, itemIndex) => setSelectedPanel(itemValue)}>
+                                <Picker.Item label="Solar Panel 01" value="solarpanel01" />
+                                <Picker.Item label="Solar Panel AA" value="solarpanelaa" />
+                                <Picker.Item label="Solar Panel Z1" value="solarpanelz1" />
+                                <Picker.Item label="Solar Panel 2A" value="solarpanel2a" />
+                            </Picker>
+                        </View>
+
+                        <View style={{ height: 20, alignItems: "center", justifyContent: "center" }}>
+                            <TouchableOpacity style={{ borderWidth: 2, borderRadius: 50, backgroundColor: '#fc8f68', paddingHorizontal: 10 }}>
+                                <Text>Calculate</Text>
+                            </TouchableOpacity>
+
+                        </View>
+                        <View style={{ alignItems: "center", justifyContent: "center" }} >
+                            <TouchableOpacity style={{ borderWidth: 2, borderRadius: 50, backgroundColor: '#fc8f68', paddingHorizontal: 10 }}>
+                                <Text>+</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+
+                <View style={{ width: "100%", alignItems: "center" }}>
+                    <Text style={{ fontSize: 20 }}>Estimated Power Generation</Text>
+                </View>
+                <View style={{ borderWidth: 3, borderColor: "black", borderRadius: 10, width: "80%", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                    <View style={{ width: "59%" }}>
+                        <Text> Per Day</Text>
+                        <Text> Per Week</Text>
+                        <Text> Per Month</Text>
+                        <Text> Per Year</Text>
+                    </View>
+                    <View style={{ width: "39%" }}>
+                        <Text>88 kJ</Text>
+                        <Text>888 kJ</Text>
+                        <Text>8888 kJ</Text>
+                        <Text>88888 kJ</Text>
+                    </View>
                 </View>
             </View>
-        </View>
-    </View >
+        </View >
     );
 }
 
