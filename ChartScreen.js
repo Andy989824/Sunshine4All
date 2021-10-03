@@ -14,7 +14,7 @@ import {
 } from "react-native-chart-kit";
 import React, { useState, useEffect } from 'react';
 import { Picker } from '@react-native-picker/picker';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -42,7 +42,7 @@ function ChartScreen({ route, navigation }) {
     return (
         
         <React.Fragment>
-            {isLoading ? <Text>Loading...</Text> : (
+            {isLoading ? <View style={{flex: 1,justifyContent:'center', alignItems:'center'}} ><CircularProgress  /></View> : (
                 <View>
                     <View>
                         <Text style={styles.title}>{params.properties.parameter.CLOUD_AMT.JAN}</Text>
